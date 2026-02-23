@@ -1,0 +1,7 @@
+{
+  "name": "pinbuddys",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
