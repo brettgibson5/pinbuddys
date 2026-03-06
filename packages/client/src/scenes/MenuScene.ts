@@ -15,10 +15,18 @@ export class MenuScene extends Phaser.Scene {
     const { width, height } = this.scale;
     const cx = width / 2;
 
+    // Scale everything to the shorter dimension so it works in landscape and portrait
+    const ref = Math.min(width, height);
+    const titleSize = Math.round(Phaser.Math.Clamp(ref * 0.14, 28, 56));
+    const subtitleSize = Math.round(Phaser.Math.Clamp(ref * 0.055, 14, 22));
+    const btnW = Math.round(Phaser.Math.Clamp(width * 0.45, 180, 320));
+    const btnH = Math.round(Phaser.Math.Clamp(ref * 0.12, 40, 56));
+    const btnFontSize = Math.round(Phaser.Math.Clamp(ref * 0.05, 14, 20));
+
     // Title
     this.add
       .text(cx, height * 0.18, "PinBuddys", {
-        fontSize: "48px",
+        fontSize: `${titleSize}px`,
         color: "#4cc9f0",
         fontFamily: "Arial Black, Arial",
         stroke: "#000000",
@@ -28,7 +36,7 @@ export class MenuScene extends Phaser.Scene {
 
     this.add
       .text(cx, height * 0.3, "🎱 Roll. Score. Win.", {
-        fontSize: "18px",
+        fontSize: `${subtitleSize}px`,
         color: "#aaaacc",
         fontFamily: "Arial",
       })
@@ -42,24 +50,33 @@ export class MenuScene extends Phaser.Scene {
     ];
 
     for (const btn of buttons) {
-      this.makeButton(cx, btn.y, btn.label, btn.action);
+      this.makeButton(cx, btn.y, btn.label, btn.action, btnW, btnH, btnFontSize);
     }
   }
 
-  private makeButton(x: number, y: number, label: string, onClick: () => void): void {
+  private makeButton(
+    x: number,
+    y: number,
+    label: string,
+    onClick: () => void,
+    btnW = 220,
+    btnH = 44,
+    fontSize = 18,
+  ): void {
     const bg = this.add
-      .rectangle(x, y, 220, 44, 0x4cc9f0, 0.15)
+      .rectangle(x, y, btnW, btnH, 0x4cc9f0, 0.15)
       .setStrokeStyle(2, 0x4cc9f0, 0.8)
       .setInteractive({ useHandCursor: true });
 
     const text = this.add
       .text(x, y, label, {
-        fontSize: "18px",
+        fontSize: `${fontSize}px`,
         color: "#ffffff",
         fontFamily: "Arial",
       })
       .setOrigin(0.5);
 
+    void text;
     bg.on("pointerover", () => bg.setFillStyle(0x4cc9f0, 0.35));
     bg.on("pointerout", () => bg.setFillStyle(0x4cc9f0, 0.15));
     bg.on("pointerdown", onClick);
