@@ -38,6 +38,8 @@ export class GameScene extends Phaser.Scene {
   private sceneH = 0;
   private sx = 1;
   private sy = 1;
+  /** True when the screen is taller than wide (phone held vertically). */
+  private portrait = false;
 
   // ─── Mode ──────────────────────────────────────────────────────────────────
   private isLocal = false;
@@ -92,8 +94,16 @@ export class GameScene extends Phaser.Scene {
   create(): void {
     this.sceneW = this.scale.width;
     this.sceneH = this.scale.height;
-    this.sx = this.sceneW / ARENA.WIDTH;
-    this.sy = this.sceneH / ARENA.HEIGHT;
+    this.portrait = this.sceneH > this.sceneW;
+
+    if (this.portrait) {
+      // Long axis (height) maps to ARENA.WIDTH; short axis (width) maps to ARENA.HEIGHT
+      this.sx = this.sceneW / ARENA.HEIGHT;
+      this.sy = this.sceneH / ARENA.WIDTH;
+    } else {
+      this.sx = this.sceneW / ARENA.WIDTH;
+      this.sy = this.sceneH / ARENA.HEIGHT;
+    }
 
     this.arena = new Arena(this, this.sceneW, this.sceneH);
     this.aimGraphics = this.add.graphics();
@@ -121,13 +131,25 @@ export class GameScene extends Phaser.Scene {
   // ─── UI Building ───────────────────────────────────────────────────────────
 
   private buildScoreUI(): void {
-    // Score numbers sit at the bottom, just inside each player's endzone boundary line
-    const circleY = this.sceneH - 30;
+    if (this.portrait) {
+      this.buildScoreUIPortrait();
+    } else {
+      this.buildScoreUILandscape();
+    }
+  }
+
+  private buildScoreUILandscape(): void {
+    const circleY = this.sceneH - 20;
     const offset = 8;
+    const fs = Math.round(Math.min(
+      ARENA.LEFT_ENDZONE_END * this.sx * 0.4,
+      this.sceneH * 0.1,
+      56,
+    ));
 
     this.p1ScoreText = this.add
       .text(ARENA.LEFT_ENDZONE_END * this.sx - offset, circleY, "0", {
-        fontSize: "20px",
+        fontSize: `${fs}px`,
         color: "#4cc9f0",
         fontFamily: "Arial Black",
         stroke: "#000000",
@@ -138,7 +160,7 @@ export class GameScene extends Phaser.Scene {
 
     this.p2ScoreText = this.add
       .text(ARENA.RIGHT_ENDZONE_START * this.sx + offset, circleY, "0", {
-        fontSize: "20px",
+        fontSize: `${fs}px`,
         color: "#f72585",
         fontFamily: "Arial Black",
         stroke: "#000000",
@@ -148,10 +170,51 @@ export class GameScene extends Phaser.Scene {
       .setDepth(8);
   }
 
-  private buildRosterUI(): void {
-    const textY = this.sceneH - 58;
+  private buildScoreUIPortrait(): void {
+    // In portrait: endzones are top/bottom.
+    // sy maps ARENA.WIDTH (800) to sceneH.
+    // Endzone depth in screen px = ARENA.LEFT_ENDZONE_END * sy
+    const endH = ARENA.LEFT_ENDZONE_END * this.sy;
+    const fs = Math.round(Math.min(endH * 0.4, this.sceneW * 0.1, 56));
+    const cx = this.sceneW / 2;
+    const offset = 8;
 
-    // "Blue's Turn" / "Red's Turn" labels — pill-bordered
+    // P1 is at the bottom — score near the bottom endzone line, readable normally
+    this.p1ScoreText = this.add
+      .text(cx, this.sceneH - endH + offset, "0", {
+        fontSize: `${fs}px`,
+        color: "#4cc9f0",
+        fontFamily: "Arial Black",
+        stroke: "#000000",
+        strokeThickness: 2,
+      })
+      .setOrigin(0.5, 0)
+      .setDepth(8);
+
+    // P2 is at the top — score near the top endzone line, rotated 180° so P2 can read it
+    this.p2ScoreText = this.add
+      .text(cx, endH - offset, "0", {
+        fontSize: `${fs}px`,
+        color: "#f72585",
+        fontFamily: "Arial Black",
+        stroke: "#000000",
+        strokeThickness: 2,
+      })
+      .setOrigin(0.5, 1)
+      .setAngle(180)
+      .setDepth(8);
+  }
+
+  private buildRosterUI(): void {
+    if (this.portrait) {
+      this.buildRosterUIPortrait();
+    } else {
+      this.buildRosterUILandscape();
+    }
+  }
+
+  private buildRosterUILandscape(): void {
+    const textY = this.sceneH - 68;
     this.p1TurnText = this.add
       .text(16, textY, "Blue's Turn", {
         fontSize: "12px",
@@ -177,37 +240,104 @@ export class GameScene extends Phaser.Scene {
     this.redrawRosterUI();
   }
 
+  private buildRosterUIPortrait(): void {
+    // P1 at bottom — label near bottom-left, normal orientation
+    this.p1TurnText = this.add
+      .text(16, this.sceneH - 16, "Blue's Turn", {
+        fontSize: "12px",
+        color: "#4cc9f0",
+        fontFamily: "Arial",
+        fontStyle: "bold",
+      })
+      .setDepth(11)
+      .setOrigin(0, 1);
+
+    // P2 at top — label near top-left, rotated 180° so P2 can read it
+    this.p2TurnText = this.add
+      .text(this.sceneW - 16, 16, "Red's Turn", {
+        fontSize: "12px",
+        color: "#f72585",
+        fontFamily: "Arial",
+        fontStyle: "bold",
+      })
+      .setDepth(11)
+      .setOrigin(0, 0)
+      .setAngle(180);
+
+    this.turnIndicatorGraphics = this.add.graphics().setDepth(10);
+    this.rosterGraphics = this.add.graphics().setDepth(10);
+    this.redrawRosterUI();
+  }
+
   private redrawRosterUI(): void {
     const g = this.rosterGraphics;
     g.clear();
 
-    const r = 8;
-    const gap = 5;
-    const padX = 14;
-    const circleY = this.sceneH - 30;
-    const maxBalls = 8;
-
-    // P1 — bottom left, cyan
-    for (let i = 0; i < maxBalls; i++) {
-      const cx = padX + i * (r * 2 + gap) + r;
-      const filled = i < this.localP1Roster;
-      g.lineStyle(2, 0x4cc9f0, filled ? 1 : 0.3);
-      g.fillStyle(0x4cc9f0, filled ? 0.85 : 0.1);
-      g.fillCircle(cx, circleY, r);
-      g.strokeCircle(cx, circleY, r);
-    }
-
-    // P2 — bottom right, magenta
-    for (let i = 0; i < maxBalls; i++) {
-      const cx = this.sceneW - padX - i * (r * 2 + gap) - r;
-      const filled = i < this.localP2Roster;
-      g.lineStyle(2, 0xf72585, filled ? 1 : 0.3);
-      g.fillStyle(0xf72585, filled ? 0.85 : 0.1);
-      g.fillCircle(cx, circleY, r);
-      g.strokeCircle(cx, circleY, r);
+    if (this.portrait) {
+      this.drawRosterPortrait(g);
+    } else {
+      this.drawRosterLandscape(g);
     }
 
     this.updateTurnIndicators();
+  }
+
+  private drawRosterLandscape(g: Phaser.GameObjects.Graphics): void {
+    const r = 5, gap = 4, perRow = 4, padX = 12;
+    const rowH = r * 2 + gap;
+    const bottomY = this.sceneH - 16;
+    const maxBalls = 8;
+
+    for (let i = 0; i < maxBalls; i++) {
+      const col = i % perRow;
+      const row = Math.floor(i / perRow);
+      const cx = padX + col * (r * 2 + gap) + r;
+      const cy = bottomY - row * rowH;
+      const filled = i < this.localP1Roster;
+      g.lineStyle(1.5, 0x4cc9f0, filled ? 1 : 0.3);
+      g.fillStyle(0x4cc9f0, filled ? 0.85 : 0.1);
+      g.fillCircle(cx, cy, r); g.strokeCircle(cx, cy, r);
+    }
+
+    for (let i = 0; i < maxBalls; i++) {
+      const col = i % perRow;
+      const row = Math.floor(i / perRow);
+      const cx = this.sceneW - padX - col * (r * 2 + gap) - r;
+      const cy = bottomY - row * rowH;
+      const filled = i < this.localP2Roster;
+      g.lineStyle(1.5, 0xf72585, filled ? 1 : 0.3);
+      g.fillStyle(0xf72585, filled ? 0.85 : 0.1);
+      g.fillCircle(cx, cy, r); g.strokeCircle(cx, cy, r);
+    }
+  }
+
+  private drawRosterPortrait(g: Phaser.GameObjects.Graphics): void {
+    // P1 at bottom: dots in a row near the bottom edge
+    // P2 at top: dots in a row near the top edge (mirrored)
+    const r = 5, gap = 4, padY = 32;
+    const maxBalls = 8;
+    const totalW = maxBalls * (r * 2) + (maxBalls - 1) * gap;
+    const startX = (this.sceneW - totalW) / 2;
+
+    // P1 — bottom, cyan
+    for (let i = 0; i < maxBalls; i++) {
+      const cx = startX + i * (r * 2 + gap) + r;
+      const cy = this.sceneH - padY;
+      const filled = i < this.localP1Roster;
+      g.lineStyle(1.5, 0x4cc9f0, filled ? 1 : 0.3);
+      g.fillStyle(0x4cc9f0, filled ? 0.85 : 0.1);
+      g.fillCircle(cx, cy, r); g.strokeCircle(cx, cy, r);
+    }
+
+    // P2 — top, magenta (right-to-left so it reads correctly when rotated)
+    for (let i = 0; i < maxBalls; i++) {
+      const cx = this.sceneW - startX - i * (r * 2 + gap) - r;
+      const cy = padY;
+      const filled = i < this.localP2Roster;
+      g.lineStyle(1.5, 0xf72585, filled ? 1 : 0.3);
+      g.fillStyle(0xf72585, filled ? 0.85 : 0.1);
+      g.fillCircle(cx, cy, r); g.strokeCircle(cx, cy, r);
+    }
   }
 
   private updateTurnIndicators(): void {
@@ -243,13 +373,25 @@ export class GameScene extends Phaser.Scene {
 
   // ─── Input ─────────────────────────────────────────────────────────────────
 
-  private getEndzoneBounds(): { minX: number; maxX: number } {
-    const isLeft = this.isLocal
-      ? this.localCurrentPlayer === 1
-      : this.myPlayerSide === "left";
-    return isLeft
-      ? { minX: 0, maxX: ARENA.LEFT_ENDZONE_END * this.sx }
-      : { minX: ARENA.RIGHT_ENDZONE_START * this.sx, maxX: ARENA.WIDTH * this.sx };
+  /**
+   * Returns the endzone bounds for the current player.
+   * In landscape: x bounds. In portrait: y bounds (P1=bottom, P2=top).
+   */
+  private getEndzoneBounds(): { minX: number; maxX: number; minY: number; maxY: number } {
+    const isP1 = this.isLocal ? this.localCurrentPlayer === 1 : this.myPlayerSide === "left";
+
+    if (this.portrait) {
+      // sy maps ARENA.WIDTH (800) → sceneH
+      const endH = ARENA.LEFT_ENDZONE_END * this.sy;
+      // P1 = bottom endzone (high y), P2 = top endzone (low y)
+      return isP1
+        ? { minX: 0, maxX: this.sceneW, minY: this.sceneH - endH, maxY: this.sceneH }
+        : { minX: 0, maxX: this.sceneW, minY: 0, maxY: endH };
+    }
+
+    return isP1
+      ? { minX: 0, maxX: ARENA.LEFT_ENDZONE_END * this.sx, minY: 0, maxY: this.sceneH }
+      : { minX: ARENA.RIGHT_ENDZONE_START * this.sx, maxX: this.sceneW, minY: 0, maxY: this.sceneH };
   }
 
   private setupInput(): void {
@@ -259,6 +401,7 @@ export class GameScene extends Phaser.Scene {
       // Check pointer is within the player's endzone
       const bounds = this.getEndzoneBounds();
       if (ptr.x < bounds.minX || ptr.x > bounds.maxX) return;
+      if (ptr.y < bounds.minY || ptr.y > bounds.maxY) return;
 
       // Check player has balls remaining
       const hasRoster = this.isLocal
@@ -351,11 +494,18 @@ export class GameScene extends Phaser.Scene {
 
   /** Center of the current player's endzone in screen px. */
   private getEndzoneCenterPoint(): { x: number; y: number } {
-    const isLeft = this.isLocal
-      ? this.localCurrentPlayer === 1
-      : this.myPlayerSide === "left";
+    const isP1 = this.isLocal ? this.localCurrentPlayer === 1 : this.myPlayerSide === "left";
+
+    if (this.portrait) {
+      const endH = ARENA.LEFT_ENDZONE_END * this.sy;
+      return {
+        x: this.sceneW / 2,
+        y: isP1 ? this.sceneH - endH / 2 : endH / 2,
+      };
+    }
+
     return {
-      x: (isLeft ? ARENA.LEFT_ENDZONE_END / 2 : (ARENA.RIGHT_ENDZONE_START + ARENA.WIDTH) / 2) * this.sx,
+      x: (isP1 ? ARENA.LEFT_ENDZONE_END / 2 : (ARENA.RIGHT_ENDZONE_START + ARENA.WIDTH) / 2) * this.sx,
       y: ARENA.HEIGHT * 0.5 * this.sy,
     };
   }
@@ -645,30 +795,57 @@ export class GameScene extends Phaser.Scene {
     }
 
     // Sync visuals — snap to exact physics position (no lerp in local mode)
-    const centerX = ARENA.CENTER_X * this.sx;
-    const leftEndX = ARENA.LEFT_ENDZONE_END * this.sx;
-    const rightEndX = ARENA.RIGHT_ENDZONE_START * this.sx;
     let p1Score = 0;
     let p2Score = 0;
-    for (const [id, body] of this.localBodies) {
-      const obj = this.ballObjects.get(id);
-      if (obj) obj.snapToPosition(body.position.x, body.position.y);
 
-      // Live score tally + scoring highlight
-      // Balls in the opponent's endzone are about to be captured — no green ring
-      const owner = this.localBallOwners.get(id);
-      const pastCenter =
-        owner === 1 ? body.position.x > centerX : body.position.x < centerX;
-      const inOpponentEndzone =
-        owner === 1
-          ? body.position.x > rightEndX
-          : body.position.x < leftEndX;
-      const isScoring = pastCenter && !inOpponentEndzone;
-      if (isScoring) {
-        if (owner === 1) p1Score++;
-        else p2Score++;
+    if (this.portrait) {
+      // Portrait: long axis = Y. P1 at bottom (high y), P2 at top (low y).
+      // sy maps ARENA.WIDTH (800) → sceneH
+      const centerY = this.sceneH / 2;
+      const topEndY = ARENA.LEFT_ENDZONE_END * this.sy;          // P2 endzone bottom edge
+      const bottomEndY = ARENA.RIGHT_ENDZONE_START * this.sy;    // P1 endzone top edge
+
+      for (const [id, body] of this.localBodies) {
+        const obj = this.ballObjects.get(id);
+        if (obj) obj.snapToPosition(body.position.x, body.position.y);
+
+        const owner = this.localBallOwners.get(id);
+        // P1 (bottom) scores when ball is above center (low y), not yet in P2 endzone
+        // P2 (top) scores when ball is below center (high y), not yet in P1 endzone
+        const pastCenter =
+          owner === 1 ? body.position.y < centerY : body.position.y > centerY;
+        const inOpponentEndzone =
+          owner === 1 ? body.position.y < topEndY : body.position.y > bottomEndY;
+        const isScoring = pastCenter && !inOpponentEndzone;
+        if (isScoring) {
+          if (owner === 1) p1Score++;
+          else p2Score++;
+        }
+        obj?.setScoring(isScoring);
       }
-      obj?.setScoring(isScoring);
+    } else {
+      const centerX = ARENA.CENTER_X * this.sx;
+      const leftEndX = ARENA.LEFT_ENDZONE_END * this.sx;
+      const rightEndX = ARENA.RIGHT_ENDZONE_START * this.sx;
+
+      for (const [id, body] of this.localBodies) {
+        const obj = this.ballObjects.get(id);
+        if (obj) obj.snapToPosition(body.position.x, body.position.y);
+
+        const owner = this.localBallOwners.get(id);
+        const pastCenter =
+          owner === 1 ? body.position.x > centerX : body.position.x < centerX;
+        const inOpponentEndzone =
+          owner === 1
+            ? body.position.x > rightEndX
+            : body.position.x < leftEndX;
+        const isScoring = pastCenter && !inOpponentEndzone;
+        if (isScoring) {
+          if (owner === 1) p1Score++;
+          else p2Score++;
+        }
+        obj?.setScoring(isScoring);
+      }
     }
     if (p1Score !== this.localP1Score || p2Score !== this.localP2Score) {
       this.localP1Score = p1Score;
@@ -690,10 +867,16 @@ export class GameScene extends Phaser.Scene {
       if (speed >= PHYSICS.REST_SPEED_THRESHOLD) continue;
       const owner = this.localBallOwners.get(id);
       if (!owner) continue;
-      const inOpponentEndzone =
-        owner === 1
-          ? body.position.x > rightEndX
-          : body.position.x < leftEndX;
+      let inOpponentEndzone: boolean;
+      if (this.portrait) {
+        const topEndY = ARENA.LEFT_ENDZONE_END * this.sy;
+        const bottomEndY = ARENA.RIGHT_ENDZONE_START * this.sy;
+        inOpponentEndzone = owner === 1 ? body.position.y < topEndY : body.position.y > bottomEndY;
+      } else {
+        const leftEndX = ARENA.LEFT_ENDZONE_END * this.sx;
+        const rightEndX = ARENA.RIGHT_ENDZONE_START * this.sx;
+        inOpponentEndzone = owner === 1 ? body.position.x > rightEndX : body.position.x < leftEndX;
+      }
       if (inOpponentEndzone) {
         toCapture.push({ id, capturer: owner === 1 ? 2 : 1 });
       }
@@ -722,8 +905,10 @@ export class GameScene extends Phaser.Scene {
     // OOB for the turn ball (tunnelling safety net)
     const turnBody = this.localBodies.get(this.localTurnBallId);
     if (turnBody) {
-      const W = ARENA.WIDTH * this.sx;
-      if (turnBody.position.x < 0 || turnBody.position.x > W) {
+      const oob = this.portrait
+        ? turnBody.position.y < 0 || turnBody.position.y > this.sceneH
+        : turnBody.position.x < 0 || turnBody.position.x > this.sceneW;
+      if (oob) {
         this.localEvaluateCaptured();
         return;
       }
