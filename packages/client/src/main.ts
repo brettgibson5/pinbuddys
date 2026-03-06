@@ -32,8 +32,3 @@ const config: Phaser.Types.Core.GameConfig = {
 };
 
 new Phaser.Game(config);
-
-// Lock to landscape on Android; iOS PWA respects manifest orientation: landscape
-if (screen.orientation?.lock) {
-  screen.orientation.lock("landscape").catch(() => {});
-}
