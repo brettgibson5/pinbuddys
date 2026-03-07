@@ -152,6 +152,8 @@ export class GameScene extends Phaser.Scene {
       73,
     ));
 
+    const dpr = window.devicePixelRatio || 1;
+
     this.p1ScoreText = this.add
       .text(ARENA.LEFT_ENDZONE_END * this.sx - offset, circleY, "0", {
         fontSize: `${fs}px`,
@@ -161,7 +163,8 @@ export class GameScene extends Phaser.Scene {
         strokeThickness: 2,
       })
       .setOrigin(1, 0.5)
-      .setDepth(8);
+      .setDepth(8)
+      .setResolution(dpr);
 
     this.p2ScoreText = this.add
       .text(ARENA.RIGHT_ENDZONE_START * this.sx + offset, circleY, "0", {
@@ -172,7 +175,8 @@ export class GameScene extends Phaser.Scene {
         strokeThickness: 2,
       })
       .setOrigin(0, 0.5)
-      .setDepth(8);
+      .setDepth(8)
+      .setResolution(dpr);
   }
 
   private buildRosterUI(): void {
@@ -185,6 +189,8 @@ export class GameScene extends Phaser.Scene {
 
   private buildRosterUILandscape(): void {
     const textY = this.sceneH - 63;
+    const dpr = window.devicePixelRatio || 1;
+
     this.p1TurnText = this.add
       .text(16, textY, "Blue's Turn", {
         fontSize: "12px",
@@ -193,7 +199,8 @@ export class GameScene extends Phaser.Scene {
         fontStyle: "bold",
       })
       .setDepth(11)
-      .setOrigin(0, 0.5);
+      .setOrigin(0, 0.5)
+      .setResolution(dpr);
 
     this.p2TurnText = this.add
       .text(this.sceneW - 16, textY, "Red's Turn", {
@@ -203,7 +210,8 @@ export class GameScene extends Phaser.Scene {
         fontStyle: "bold",
       })
       .setDepth(11)
-      .setOrigin(1, 0.5);
+      .setOrigin(1, 0.5)
+      .setResolution(dpr);
 
     this.turnIndicatorGraphics = this.add.graphics().setDepth(10);
     this.rosterGraphics = this.add.graphics().setDepth(10);
@@ -239,13 +247,15 @@ export class GameScene extends Phaser.Scene {
 
     // ── P1 — bottom-left ─────────────────────────────────────────────────────
     const p1TurnY = this.sceneH - padYBottom;   // turn text baseline
+    const dpr = window.devicePixelRatio || 1;
 
     this.p1TurnText = this.add
       .text(padX + scoreW + labelGap, p1TurnY, "Blue's Turn", {
         fontSize: "12px", color: "#4cc9f0", fontFamily: "Arial", fontStyle: "bold",
       })
       .setOrigin(0, 1)
-      .setDepth(11);
+      .setDepth(11)
+      .setResolution(dpr);
 
     this.p1ScoreText = this.add
       .text(padX, p1TurnY, "0", {
@@ -253,7 +263,8 @@ export class GameScene extends Phaser.Scene {
         fontFamily: "Arial Black", stroke: "#000000", strokeThickness: 2,
       })
       .setOrigin(0, 1)
-      .setDepth(8);
+      .setDepth(8)
+      .setResolution(dpr);
 
     // Dots: left-aligned with turn text, 10px above turn text top
     const p1TurnTop = p1TurnY - turnH;
@@ -271,7 +282,8 @@ export class GameScene extends Phaser.Scene {
       })
       .setOrigin(0, 1)
       .setAngle(180)
-      .setDepth(8);
+      .setDepth(8)
+      .setResolution(dpr);
 
     // "Red's Turn" left of score from our view; pivot sits at score's left edge minus gap
     this.p2TurnText = this.add
@@ -280,7 +292,8 @@ export class GameScene extends Phaser.Scene {
       })
       .setOrigin(0, 1)
       .setAngle(180)
-      .setDepth(11);
+      .setDepth(11)
+      .setResolution(dpr);
 
     // Dots: right-aligned mirror of P1 (10px below turn text visual bottom from our view)
     const p2TurnBottom = p2PivotY + turnH;
