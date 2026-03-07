@@ -142,7 +142,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private buildScoreUILandscape(): void {
-    const circleY = this.sceneH - 30;  // 10px higher than before
+    const circleY = this.sceneH - 40;
     const offset = 8;
     // +30% larger than original formula
     const fs = Math.round(Math.min(
@@ -183,7 +183,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private buildRosterUILandscape(): void {
-    const textY = this.sceneH - 68;
+    const textY = this.sceneH - 63;
     this.p1TurnText = this.add
       .text(16, textY, "Blue's Turn", {
         fontSize: "12px",
