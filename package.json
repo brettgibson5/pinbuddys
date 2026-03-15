@@ -1,9 +1,9 @@
 {
-  "name": "pinbuddys",
+  "name": "bumpbuddies",
   "private": true,
   "packageManager": "pnpm@9.0.0",
   "scripts": {
-    "dev": "turbo run dev --filter=!@pinbuddys/mobile",
+    "dev": "turbo run dev --filter=!@bumpbuddies/mobile",
     "dev:all": "turbo run dev",
     "build": "turbo run build",
     "lint": "turbo run lint"

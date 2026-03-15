@@ -3,21 +3,21 @@
 // The client scales the render to match the device, but physics stays in these units.
 
 export const ARENA = {
-  WIDTH: 800,        // total arena width
-  HEIGHT: 480,       // total arena height
+  WIDTH: 800, // total arena width
+  HEIGHT: 480, // total arena height
   WALL_THICKNESS: 20,
-  CENTER_X: 400,     // x position of the dividing line
+  CENTER_X: 400, // x position of the dividing line
 
   // The "too far" zone — ball exits here = opponent captures it
   LEFT_BOUNDARY: 0,
   RIGHT_BOUNDARY: 800,
 
   // Scoring zone: ball must be fully within opponent half (with a small buffer)
-  SCORE_BUFFER: 10,  // px — ball centre must be at least this far from center line
+  SCORE_BUFFER: 10, // px — ball centre must be at least this far from center line
 
   // Endzones — back ~19% of each player's side
-  LEFT_ENDZONE_END: 100,     // P1 throws from x=0..100
-  RIGHT_ENDZONE_START: 700,  // P2 throws from x=700..800
+  LEFT_ENDZONE_END: 100, // P1 throws from x=0..100
+  RIGHT_ENDZONE_START: 700, // P2 throws from x=700..800
 
   /** Starting number of balls per player */
   INITIAL_ROSTER_SIZE: 4,
@@ -51,7 +51,7 @@ export const RULES = {
 
 // ─── Colyseus ─────────────────────────────────────────────────────────────────
 
-export const ROOM_NAME = "pinbuddys";
+export const ROOM_NAME = "bumpbuddies";
 
 // ─── Firebase collections ─────────────────────────────────────────────────────
 

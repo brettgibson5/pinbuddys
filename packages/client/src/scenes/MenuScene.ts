@@ -37,7 +37,7 @@ export class MenuScene extends Phaser.Scene {
 
     // Title
     this.add
-      .text(cx, height * 0.18, "PinBuddys", {
+      .text(cx, height * 0.18, "Bump Buddies", {
         fontSize: `${titleSize}px`,
         color: "#f5d48a",
         fontFamily: "Georgia, Times New Roman, serif",

@@ -1,6 +1,6 @@
 import Matter from "matter-js";
-import { ARENA, PHYSICS, BALL_PHYSICS } from "@pinbuddys/shared";
-import type { BallSize, ThrowPayload } from "@pinbuddys/shared";
+import { ARENA, PHYSICS, BALL_PHYSICS } from "@bumpbuddies/shared";
+import type { BallSize, ThrowPayload } from "@bumpbuddies/shared";
 
 const { Engine, World, Bodies, Body } = Matter;
 
@@ -20,7 +20,7 @@ export interface BallCrossing {
 
 /**
  * Server-side Matter.js wrapper.
- * Runs a headless physics world used by PinBuddysRoom.
+ * Runs a headless physics world used by BumpBuddiesRoom.
  * All coordinates are in ARENA units (800×480).
  */
 export class PhysicsEngine {

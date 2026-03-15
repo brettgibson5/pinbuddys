@@ -1,6 +1,6 @@
 import Phaser from "phaser";
-import { BALL_PHYSICS } from "@pinbuddys/shared";
-import type { BallSize } from "@pinbuddys/shared";
+import { BALL_PHYSICS } from "@bumpbuddies/shared";
+import type { BallSize } from "@bumpbuddies/shared";
 
 const LERP_ALPHA = 0.25; // position interpolation factor per frame
 

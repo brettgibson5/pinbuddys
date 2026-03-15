@@ -1,4 +1,4 @@
-# PinBuddys
+# Bump Buddies
 
 Physics-based turn-based multiplayer game. Roll balls across the arena to score on the opponent's half. Play online or pass-and-play locally.
 
@@ -26,10 +26,10 @@ pnpm install
 ### Run locally (web + server)
 ```bash
 # Terminal 1 — game server
-pnpm --filter @pinbuddys/server dev
+pnpm --filter @bumpbuddies/server dev
 
 # Terminal 2 — Phaser web client
-pnpm --filter @pinbuddys/client dev
+pnpm --filter @bumpbuddies/client dev
 ```
 
 Open two browser tabs at http://localhost:3000 and join via "Play Online" to test two-player flow.
@@ -57,7 +57,7 @@ Requires macOS + Xcode for iOS, or Android Studio for Android.
 
 ```bash
 # Build the web client first
-pnpm --filter @pinbuddys/client build
+pnpm --filter @bumpbuddies/client build
 
 # Then sync and open in native IDE
 cd packages/mobile

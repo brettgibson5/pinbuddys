@@ -2,8 +2,8 @@ import Phaser from "phaser";
 import { Arena } from "../objects/Arena";
 import { Ball } from "../objects/Ball";
 import { colyseusService } from "../network/ColyseusClient";
-import { ARENA, PHYSICS, BALL_PHYSICS, RULES } from "@pinbuddys/shared";
-import type { GamePhase, ThrowPayload } from "@pinbuddys/shared";
+import { ARENA, PHYSICS, BALL_PHYSICS, RULES } from "@bumpbuddies/shared";
+import type { GamePhase, ThrowPayload } from "@bumpbuddies/shared";
 
 // Matter.js (browser build) — used for LOCAL mode physics only
 import Matter from "matter-js";

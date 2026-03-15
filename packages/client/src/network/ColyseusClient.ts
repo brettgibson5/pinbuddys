@@ -1,10 +1,10 @@
 import * as Colyseus from "colyseus.js";
-import { ROOM_NAME } from "@pinbuddys/shared";
+import { ROOM_NAME } from "@bumpbuddies/shared";
 import type {
   ThrowPayload,
   SelectBallPayload,
   ServerEvent,
-} from "@pinbuddys/shared";
+} from "@bumpbuddies/shared";
 
 export type RoomState = Colyseus.Room["state"];
 

@@ -1,5 +1,5 @@
 import { Schema, type } from "@colyseus/schema";
-import type { BallSize } from "@pinbuddys/shared";
+import type { BallSize } from "@bumpbuddies/shared";
 
 export class BallState extends Schema {
   @type("string") id: string = "";

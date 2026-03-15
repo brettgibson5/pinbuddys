@@ -1,5 +1,5 @@
 import { Schema, MapSchema, ArraySchema, type } from "@colyseus/schema";
-import type { GamePhase } from "@pinbuddys/shared";
+import type { GamePhase } from "@bumpbuddies/shared";
 import { PlayerState } from "./PlayerState";
 import { BallState } from "./BallState";
 

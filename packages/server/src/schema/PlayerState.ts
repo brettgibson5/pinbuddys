@@ -1,5 +1,5 @@
 import { Schema, type } from "@colyseus/schema";
-import type { PlayerSide } from "@pinbuddys/shared";
+import type { PlayerSide } from "@bumpbuddies/shared";
 
 export class PlayerState extends Schema {
   @type("string") sessionId: string = "";

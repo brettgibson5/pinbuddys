@@ -5,15 +5,15 @@ import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig({
   resolve: {
     alias: {
-      "@pinbuddys/shared": path.resolve(__dirname, "../shared/src/index.ts"),
+      "@bumpbuddies/shared": path.resolve(__dirname, "../shared/src/index.ts"),
     },
   },
   plugins: [
     VitePWA({
       registerType: "autoUpdate",
       manifest: {
-        name: "PinBuddys",
-        short_name: "PinBuddys",
+        name: "Bump Buddies",
+        short_name: "Bump Buddies",
         description: "Pass-and-play pinball game",
         theme_color: "#1a1a2e",
         background_color: "#1a1a2e",

@@ -18,8 +18,8 @@ import {
   limit,
   getDocs,
 } from "firebase/firestore";
-import type { UserProfile } from "@pinbuddys/shared";
-import { FIRESTORE } from "@pinbuddys/shared";
+import type { UserProfile } from "@bumpbuddies/shared";
+import { FIRESTORE } from "@bumpbuddies/shared";
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 

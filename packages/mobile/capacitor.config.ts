@@ -1,11 +1,11 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: "com.pinbuddys.app",
-  appName: "PinBuddys",
+  appId: "com.bumpbuddies.app",
+  appName: "Bump Buddies",
   /**
    * Points to the Vite build output of the client package.
-   * Run `pnpm --filter @pinbuddys/client build` before syncing.
+   * Run `pnpm --filter @bumpbuddies/client build` before syncing.
    */
   webDir: "../client/dist",
   plugins: {

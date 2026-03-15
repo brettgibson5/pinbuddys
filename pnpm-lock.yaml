@@ -21,7 +21,7 @@ importers:
 
   packages/client:
     dependencies:
-      '@pinbuddys/shared':
+      '@bumpbuddies/shared':
         specifier: workspace:*
         version: link:../shared
       colyseus.js:
@@ -119,7 +119,7 @@ importers:
       '@colyseus/schema':
         specifier: ^2.0.37
         version: 2.0.37
-      '@pinbuddys/shared':
+      '@bumpbuddies/shared':
         specifier: workspace:*
         version: link:../shared
       colyseus:

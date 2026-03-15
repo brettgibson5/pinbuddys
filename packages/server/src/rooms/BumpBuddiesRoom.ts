@@ -4,17 +4,17 @@ import { PlayerState } from "../schema/PlayerState";
 import { BallState } from "../schema/BallState";
 import { PhysicsEngine } from "../physics/PhysicsEngine";
 import type { BallCrossing } from "../physics/PhysicsEngine";
-import { ARENA, PHYSICS, RULES } from "@pinbuddys/shared";
+import { ARENA, PHYSICS, RULES } from "@bumpbuddies/shared";
 import type {
   ThrowPayload,
   SelectBallPayload,
   ServerEvent,
   GamePhase,
   BallSize,
-} from "@pinbuddys/shared";
+} from "@bumpbuddies/shared";
 import { saveMatchResult } from "../firebase/firebaseAdmin";
 
-export class PinBuddysRoom extends Room<GameState> {
+export class BumpBuddiesRoom extends Room<GameState> {
   maxClients = 2;
 
   private physics!: PhysicsEngine;
@@ -36,7 +36,7 @@ export class PinBuddysRoom extends Room<GameState> {
       // Ball size selection removed — single standard ball
     });
 
-    console.log(`[PinBuddysRoom] Created room ${this.roomId}`);
+    console.log(`[BumpBuddiesRoom] Created room ${this.roomId}`);
   }
 
   onJoin(
@@ -55,7 +55,7 @@ export class PinBuddysRoom extends Room<GameState> {
     this.state.players.set(client.sessionId, player);
 
     console.log(
-      `[PinBuddysRoom] ${player.displayName} joined (side: ${player.side})`,
+      `[BumpBuddiesRoom] ${player.displayName} joined (side: ${player.side})`,
     );
 
     if (this.state.players.size === 2) {
@@ -78,7 +78,7 @@ export class PinBuddysRoom extends Room<GameState> {
   onDispose(): void {
     this.stopSimulation();
     this.clearTurnTimeout();
-    console.log(`[PinBuddysRoom] Disposed room ${this.roomId}`);
+    console.log(`[BumpBuddiesRoom] Disposed room ${this.roomId}`);
   }
 
   // ─── Game Flow ─────────────────────────────────────────────────────────────
@@ -88,7 +88,7 @@ export class PinBuddysRoom extends Room<GameState> {
     this.state.currentPlayerId = p1Id;
     this.setPhase("p1Turn");
     this.startTurnTimeout();
-    console.log(`[PinBuddysRoom] Game started, ${p1Id} goes first`);
+    console.log(`[BumpBuddiesRoom] Game started, ${p1Id} goes first`);
   }
 
   private setPhase(phase: GamePhase): void {

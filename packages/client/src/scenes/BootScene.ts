@@ -31,7 +31,7 @@ export class BootScene extends Phaser.Scene {
     });
 
     this.add
-      .text(width / 2, barY - 40, "PinBuddys", {
+      .text(width / 2, barY - 40, "Bump Buddies", {
         fontSize: "32px",
         color: "#ffffff",
         fontFamily: "Arial",

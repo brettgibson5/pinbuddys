@@ -1,6 +1,6 @@
 import * as admin from "firebase-admin";
-import type { MatchRecord } from "@pinbuddys/shared";
-import { FIRESTORE } from "@pinbuddys/shared";
+import type { MatchRecord } from "@bumpbuddies/shared";
+import { FIRESTORE } from "@bumpbuddies/shared";
 
 let initialized = false;
 

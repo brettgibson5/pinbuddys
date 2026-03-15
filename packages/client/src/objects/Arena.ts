@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { ARENA } from "@pinbuddys/shared";
+import { ARENA } from "@bumpbuddies/shared";
 
 type QualityTier = "low" | "medium" | "high" | "ultra";
 

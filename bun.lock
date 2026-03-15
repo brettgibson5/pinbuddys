@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "pinbuddys",
+      "name": "bumpbuddies",
       "dependencies": {
         "vercel": "^50.28.0",
       },
